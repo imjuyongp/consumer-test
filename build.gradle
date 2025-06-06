@@ -40,6 +40,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation "io.confluent:kafka-avro-serializer:7.5.0"
 
+	implementation platform("software.amazon.awssdk:bom:2.21.10") // BOM으로 버전 통일
+	implementation "software.amazon.awssdk:s3"
+
 }
 
 tasks.named('test') {
