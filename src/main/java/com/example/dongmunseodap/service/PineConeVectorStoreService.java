@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 public class PineConeVectorStoreService implements VectorStoreService {
 	private final VectorStore vectorStore;
 	@Override
-	public void saveChunks(String documentId, List<String> chunks){
+	public void saveChunks(String traceId, List<String> chunks){
 		List<Document> documents= IntStream.range(0, chunks.size())
 			.mapToObj(i -> {
 				Map<String, Object> metadata = new HashMap<>();
-				metadata.put("document_id", documentId);
+				metadata.put("trace_id", traceId);
 				metadata.put("chunk_index", i);
 				return new Document(chunks.get(i), metadata);
 			})

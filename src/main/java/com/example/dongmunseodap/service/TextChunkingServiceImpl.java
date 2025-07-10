@@ -1,6 +1,5 @@
 package com.example.dongmunseodap.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -16,11 +15,18 @@ public class TextChunkingServiceImpl implements TextChunkingService {
 		String fullText = content.getText();
 		if (fullText == null || fullText.isBlank()) return List.of();
 
-		//REFACTOR: 추후 의미를 담을 수 있는 청크 단위로 분할
-		return Arrays.stream(fullText.split("\\n\\n"))
-				.map(String::trim)
-				.filter(s -> !s.isEmpty())
-				.toList();
+		List<String> chunks = new java.util.ArrayList<>();
+		final int maxChars = 2000; // Conservative cap for token limits
+		final int overlapChars = 300;
 
+		int start = 0;
+		while (start < fullText.length()) {
+		    int end = Math.min(start + maxChars, fullText.length());
+		    String chunk = fullText.substring(start, end);
+		    chunks.add(chunk);
+		    if (end == fullText.length()) break;
+		    start += (maxChars - overlapChars);
+		}
+		return chunks;
 	}
 }
