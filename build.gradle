@@ -5,8 +5,11 @@ plugins {
 	id "com.github.davidmc24.gradle.plugin.avro" version "1.5.0"
 
 }
+ext {
+	springAiVersion = "1.0.0"
+}
 
-group = 'com.DongMunSeoDap '
+group = 'com.DongMunSeoDap'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -43,6 +46,13 @@ dependencies {
 	implementation platform("software.amazon.awssdk:bom:2.21.10") // BOM으로 버전 통일
 	implementation "software.amazon.awssdk:s3"
 
+	// PDF 처리 (Apache PDFBox)
+	implementation 'org.apache.pdfbox:pdfbox:3.0.1'
+	implementation 'org.apache.pdfbox:pdfbox-tools:3.0.1'
+	implementation 'org.apache.pdfbox:fontbox:3.0.1'
+
+	implementation 'org.springframework.ai:spring-ai-starter-vector-store-pinecone'
+	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
 }
 
 tasks.named('test') {
@@ -54,5 +64,10 @@ sourceSets {
 		java {
 			srcDirs += 'build/generated-main-avro-java'
 		}
+	}
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:$springAiVersion"
 	}
 }
