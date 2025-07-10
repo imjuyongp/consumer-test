@@ -3,6 +3,7 @@ package com.example.dongmunseodap.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,25 @@ public class PDFTextExtractor {
 			return String.format("ExtractedContent{textLength=%d, imageCount=%d}",
 				getTextLength(), getImageCount());
 		}
+	}
+
+	public ExtractedContent extractedContent(InputStream inputStream) {
+		ExtractedContent extractedContent = new ExtractedContent();
+
+		try(PDDocument document = Loader.loadPDF(inputStream.readAllBytes())) {
+			log.info("pdf load success : {} pages", document.getNumberOfPages());
+
+			//텍스트 추출
+			String extractedText=extractText(document);
+			extractedContent.setText(extractedText);
+
+			//TODO: 이미지 추출
+			log.info("extracted text length: {}", extractedText.length());
+
+		} catch (IOException e) {
+			log.error("PDFTextExtractor.extractedContent() - error : {}", e.getMessage());
+		}
+		return extractedContent;
 	}
 
 	public ExtractedContent extractedContent(File pdfFile) {
@@ -82,7 +102,7 @@ public class PDFTextExtractor {
 		}
 
 		return rawText
-			.replaceAll("[ \\t]+", " ") // 연속된 공백, 탭을 하나의 공백으로
+			.replaceAll("[ \t]+", " ") // 연속된 공백, 탭을 하나의 공백으로
 			.replaceAll("\\n{3,}", "\n\n")// 줄바꿈 최대 2개
 			.trim();
 	}
